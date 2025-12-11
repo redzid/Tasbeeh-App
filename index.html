@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Tasbeeh Counter</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap">
+<style>
+@font-face {
+    font-family: 'Jameel';
+    src: url('JameelNooriNastaleeq.ttf') format('truetype');
+}
+
+/* Global Styles */
+body {
+    font-family: 'Noto Sans', sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    transition: background 0.5s, color 0.5s;
+}
+
+/* Light & Dark Themes */
+body.light {
+    background: linear-gradient(140deg, #0b3d2e, #145a32, #1e8449);
+    color: white;
+}
+body.dark {
+    background: linear-gradient(140deg, #0a1d1a, #0f2b25, #16332e);
+    color: #f7f7f7;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+    margin: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Card */
+.card {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #d4af37;
+    border-radius: 25px;
+    width: 100%;
+    padding: 25px;
+    box-shadow: 0 0 25px #d4af37;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: background 0.5s, border 0.5s, box-shadow 0.5s;
+}
+
+body.dark .card {
+    background: rgba(0,0,0,0.4);
+    border: 2px solid #f7e98e;
+    box-shadow: 0 0 25px #f7e98e;
+}
+
+/* Title Islamic Design */
+#title {
+    font-size: 36px;
+    font-weight: bold;
+    background: linear-gradient(45deg, #ffd700, #f7e98e, #ffd700);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 10px #ffd700, 0 0 20px #f7e98e, 0 0 30px #d4af37;
+    font-family: 'Jameel', serif;
+    margin-bottom: 20px;
+    text-align: center;
+    transition: text-shadow 0.5s;
+}
+
+body.dark #title {
+    text-shadow: 0 0 10px #f7e98e, 0 0 20px #ffd700, 0 0 25px #f7e98e;
+}
+
+/* Input */
+#tasbeehName {
+    width: 90%;
+    padding: 14px;
+    font-size: 22px;
+    border-radius: 15px;
+    border: 2px solid #d4af37;
+    background: rgba(255,255,255,0.2);
+    color: white;
+    text-align: center;
+    margin-bottom: 20px;
+    transition: background 0.5s, border 0.5s, color 0.5s;
+}
+body.dark #tasbeehName {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid #f7e98e;
+    color: #f7f7f7;
+}
+
+/* Count Display */
+#count {
+    font-size: 70px;
+    font-weight: bold;
+    color: #f7e98e;
+    text-shadow: 3px 3px 12px #145a32, 0 0 15px #ffd700;
+    margin: 15px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    transition: color 0.5s, text-shadow 0.5s;
+}
+
+body.dark #count {
+    color: #ffd700;
+    text-shadow: 2px 2px 10px #0a1d1a, 0 0 15px #f7e98e;
+}
+
+/* Buttons */
+button {
+    border: none;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.5s;
+}
+
+/* Urdu Button Font */
+.urdu-btn { font-family: 'Jameel', serif; direction: rtl; text-align: center; }
+
+button:hover { transform: scale(1.05); box-shadow: 0 0 15px #ffd700; }
+
+.inc { background: linear-gradient(45deg,#1abc9c,#16a085); font-size:28px; padding:22px 0; border:2px solid #27ae60; width:95%; border-radius:20px; }
+.reset { background: #c0392b; font-size:16px; padding:10px; width:48%; border-radius:12px; }
+.recordsBtn { background: #27ae60; font-size:16px; padding:10px; width:48%; border-radius:12px; }
+.newTasbih { background: #8e44ad; font-size:20px; padding:15px; width:95%; border-radius:18px; margin-bottom:15px; }
+
+/* Language Button */
+#langBtn {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #d4af37;
+    color: black;
+    font-size: 14px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+/* Dark Mode Switch */
+.switch-container {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    font-size:14px;
+}
+.switch-container input { display: none; }
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+    margin-left: 8px;
+}
+.switch input { opacity: 0; width: 0; height: 0; }
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0; left:0; right:0; bottom:0;
+    background-color: #ccc;
+    transition: .4s;
+    border-radius: 34px;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: .4s;
+    border-radius: 50%;
+}
+input:checked + .slider {
+    background-color: #27ae60;
+}
+input:checked + .slider:before {
+    transform: translateX(26px);
+}
+
+/* Records Screen */
+#recordsScreen { display: none; width: 100%; }
+#savedTitle {
+    text-align: center;
+    margin-bottom: 15px;
+}
+.recordItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.15);
+    border: 1px solid #d4af37;
+    padding: 12px 15px;
+    margin: 8px 0;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+.recordItem:hover { background: rgba(255,255,255,0.25); }
+.recordName { cursor: pointer; font-size: 18px; flex:1; }
+.deleteBtn {
+    background: #c0392b;
+    border: none;
+    padding: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Footer */
+footer {
+    font-weight: bold;
+    color: #f7e98e;
+    text-align: center;
+    margin-top: 20px;
+    width: 100%;
+}
+
+/* Urdu font & alignment */
+.urdu { font-family: 'Jameel', serif; direction: rtl; text-align: right; }
+.en { direction: ltr; text-align: left; }
+
+/* Responsive */
+@media screen and (max-width: 480px){
+    #count { font-size: 55px; }
+    #tasbeehName { font-size: 20px; padding: 12px; }
+    .inc { font-size:24px; padding:18px 0; }
+    .newTasbih { font-size:18px; padding:12px; }
+}
+</style>
+</head>
+<body class="light">
+
+<div class="container">
+    <!-- Main Screen -->
+    <div class="card" id="mainScreen">
+        <div id="langBtn" onclick="toggleLang()" class="urdu-btn">اردو</div>
+        <div class="switch-container">
+            Dark
+            <label class="switch">
+                <input type="checkbox" id="darkModeToggle" onchange="toggleDarkMode()">
+                <span class="slider"></span>
+            </label>
+        </div>
+        <h2 id="title">Tasbeeh Counter</h2>
+
+        <!-- Count Display at Top -->
+        <div id="count">0</div>
+
+        <button class="newTasbih urdu-btn" id="newBtn" onclick="newTasbih()">نئی تسبیح</button>
+        <input type="text" id="tasbeehName" placeholder="Enter Tasbih / Surah Name" oninput="nameChanged()" class="en">
+
+        <!-- Buttons Section -->
+        <div style="width:100%; display:flex; flex-direction:column; align-items:center; margin-top:10px;">
+            <!-- Professional Big Count Button -->
+            <button class="inc urdu-btn" onclick="increment()">Count +1</button>
+            <!-- Small Buttons -->
+            <div style="width:95%; display:flex; justify-content:space-between; margin-top:10px;">
+                <button class="reset urdu-btn" onclick="resetCount()">ری سیٹ کریں</button>
+                <button class="recordsBtn urdu-btn" onclick="showRecords()">محفوظ ریکارڈ</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Records Screen -->
+    <div class="card" id="recordsScreen">
+        <h2 id="savedTitle">محفوظ شدہ ریکارڈ</h2>
+        <div id="recordList"></div>
+        <button class="recordsBtn" onclick="backToMain()" style="width:100%; font-size:16px; padding:10px;">Back</button>
+    </div>
+
+    <!-- Footer -->
+    <footer id="footer">App Made by Rashid</footer>
+</div>
+
+<script>
+let lang = "EN";
+let currentName = "";
+let records = JSON.parse(localStorage.getItem("records")) || {};
+let countingStarted = false;
+
+window.onload = function() { 
+    loadLastRecord(); 
+    let savedDark = localStorage.getItem("darkMode") === "true";
+    document.getElementById("darkModeToggle").checked = savedDark;
+    if(savedDark) document.body.classList.replace("light","dark");
+}
+
+function toggleDarkMode(){
+    let isDark = document.getElementById("darkModeToggle").checked;
+    document.body.classList.toggle("dark", isDark);
+    document.body.classList.toggle("light", !isDark);
+    localStorage.setItem("darkMode", isDark);
+}
+
+function loadLastRecord(){
+    let name = localStorage.getItem("currentName");
+    let count = localStorage.getItem("currentCount");
+    if(name){
+        currentName = name;
+        document.getElementById("tasbeehName").value = name;
+        document.getElementById("count").innerText = count;
+        countingStarted = true;
+    }
+}
+
+function newTasbih(){
+    currentName = "";
+    countingStarted = false;
+    document.getElementById("tasbeehName").value = "";
+    document.getElementById("count").innerText = 0;
+}
+
+function nameChanged(){ countingStarted = false; }
+
+function increment(){
+    let name = document.getElementById("tasbeehName").value.trim();
+    if(name===""){ alert(lang==="EN"?"Please enter name":"نام درج کریں"); return; }
+    currentName = name;
+    countingStarted = true;
+    let count = parseInt(document.getElementById("count").innerText);
+    count++;
+    document.getElementById("count").innerText = count;
+    autoSave();
+}
+
+function resetCount(){
+    document.getElementById("count").innerText = 0;
+    if(countingStarted) autoSave();
+}
+
+function autoSave(){
+    if(!countingStarted) return;
+    records[currentName] = parseInt(document.getElementById("count").innerText);
+    localStorage.setItem("records", JSON.stringify(records));
+    localStorage.setItem("currentName", currentName);
+    localStorage.setItem("currentCount", records[currentName]);
+}
+
+function showRecords(){
+    document.getElementById("mainScreen").style.display = "none";
+    document.getElementById("recordsScreen").style.display = "block";
+
+    let list = document.getElementById("recordList");
+    list.innerHTML = "";
+    for(let name in records){
+        let div = document.createElement("div");
+        div.className = "recordItem " + (lang==="UR"?"urdu":"en");
+        div.innerHTML = `<span class="recordName">${name} (${records[name]})</span>
+                         <button class="deleteBtn" onclick="deleteRecord('${name}')">&#128465;</button>`;
+        div.querySelector(".recordName").onclick = function(){ loadRecord(name); };
+        list.appendChild(div);
+    }
+}
+
+function loadRecord(name){
+    currentName = name;
+    document.getElementById("tasbeehName").value = name;
+    document.getElementById("count").innerText = records[name];
+    countingStarted = true;
+    backToMain();
+}
+
+function deleteRecord(name){
+    delete records[name];
+    localStorage.setItem("records", JSON.stringify(records));
+    showRecords();
+}
+
+function backToMain(){
+    document.getElementById("mainScreen").style.display = "flex";
+    document.getElementById("recordsScreen").style.display = "none";
+}
+
+function toggleLang(){
+    if(lang==="EN"){
+        lang="UR";
+        document.getElementById("title").innerText="تسبیح کاؤنٹر";
+        document.getElementById("newBtn").innerText="نئی تسبیح";
+        document.getElementById("tasbeehName").placeholder="تسبیح / سورہ کا نام لکھیں";
+        document.getElementById("tasbeehName").classList.remove("en");
+        document.getElementById("tasbeehName").classList.add("urdu");
+        document.querySelector(".inc").innerText="گنیں";
+        document.querySelector(".reset").innerText="ری سیٹ کریں";
+        document.querySelector(".recordsBtn").innerText="محفوظ ریکارڈ";
+        document.getElementById("savedTitle").innerText="محفوظ شدہ ریکارڈ";
+        document.getElementById("footer").innerText="ایپ تیار کردہ: راشد";
+
+        document.getElementById("newBtn").classList.add("urdu-btn");
+        document.querySelector(".reset").classList.add("urdu-btn");
+        document.querySelector(".recordsBtn").classList.add("urdu-btn");
+        document.getElementById("langBtn").classList.add("urdu-btn");
+
+        document.getElementById("langBtn").innerText="EN";
+    } else {
+        lang="EN";
+        document.getElementById("title").innerText="Tasbeeh Counter";
+        document.getElementById("newBtn").innerText="New Tasbih";
+        document.getElementById("tasbeehName").placeholder="Enter Tasbih / Surah Name";
+        document.getElementById("tasbeehName").classList.remove("urdu");
+        document.getElementById("tasbeehName").classList.add("en");
+        document.querySelector(".inc").innerText="Count +1";
+        document.querySelector(".reset").innerText="Reset";
+        document.querySelector(".recordsBtn").innerText="Saved Records";
+        document.getElementById("savedTitle").innerText="Saved Records";
+        document.getElementById("footer").innerText="App Made by Rashid";
+
+        document.getElementById("newBtn").classList.remove("urdu-btn");
+        document.querySelector(".reset").classList.remove("urdu-btn");
+        document.querySelector(".recordsBtn").classList.remove("urdu-btn");
+        document.getElementById("langBtn").classList.remove("urdu-btn");
+
+        document.getElementById("langBtn").innerText="اردو";
+    }
+}
+</script>
+</body>
+</html>
